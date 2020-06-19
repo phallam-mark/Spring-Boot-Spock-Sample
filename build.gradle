@@ -41,6 +41,7 @@ configurations.all {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: '2.3.0.RELEASE'
 	implementation group: 'org.springframework', name: 'spring-context'
 	implementation group: 'org.springframework', name: 'spring-core'
 	implementation group: 'org.springframework', name: 'spring-test'
