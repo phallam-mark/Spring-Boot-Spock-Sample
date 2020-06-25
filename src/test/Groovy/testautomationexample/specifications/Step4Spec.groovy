@@ -1,46 +1,62 @@
 package testautomationexample.specifications
 
+import com.loyalty.testautomationexample.restClient.SwapiClient
 import com.loyalty.testautomationexample.utilities.Logger
-import groovyx.net.http.HttpResponseDecorator
-import spock.lang.Shared
-//import spock.lang.Specification
-import groovyx.net.http.RESTClient
+import org.apache.http.HttpResponse
+import org.apache.http.HttpEntity
+import org.apache.http.util.EntityUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.json.*
 
 class Step4Spec extends BaseSpec {
     // adding a call to a REST API to Step 4
 
-    //@Shared because these resource will be initialized once in the setupSpec section and shared amongst multiple tests
-    @Shared String currentEnv = "local"; //declare which environment you want to use here
-    @Shared RESTClient swClient;
+    @Autowired
+    SwapiClient swapiClient
 
     def setupSpec(){
-        //ConfigObject config = new ConfigSlurper(currentEnv).parse(EnviroConfig);
-        Logger.logMessage("setupSpec() - Runs once per Specification");
-        swClient = new RESTClient( 'https://swapi.dev/api/' );
         Logger.logMessage("setupSpec() - Runs once per Specification");
     }
+
     def setup() {
         Logger.logMessage("setup() - Runs before every feature method");
     }
+
     def "TestCase 1 - verify that we can successfully make a call to a REST API"(){
         Logger.logMessage("TestCase 1 - start");
         given : "an API endpoint exists that provides data about Star Wars Movies (SWAPI)"
-        //NA - was created in the setupSpec portion of the Spec
-        when: "a call is made to the API"
-        HttpResponseDecorator resp = swClient.get( path : 'people');
+        // api client is automatically created by Spring via @Autowired
+        when: "a call is made to the API to get a list of characters"
+        HttpResponse response = swapiClient.getCharacters()
         then: "the HTTP response status should be 200"
-        resp.status == 200;
+        response.getStatusLine().statusCode == 200
     }
 
     def "TestCase 2 - verify the contents of the JSON response"() {
         Logger.logMessage("TestCase 2 - start");
         given: "an API endpoint exists that provides data about Star Wars Movies (SWAPI)"
-        //NA - was created in the setupSpec portion of the Spec
+        // api client is automatically created by Spring via @Autowired
         when: "a call is made to the API requesting data for the planet Tatooine"
-        HttpResponseDecorator JsonResponse = swClient.get(path: 'planets', query: ["search": "tatooine"]);
-        then: "the value of 'climate' for the planet Tatooine should be 'arid'"
-        ArrayList climates = JsonResponse.getData().getAt("results").getAt("climate");
-        climates.contains("arid") == true;
+        //HttpResponseDecorator JsonResponse = swClient.get(path: 'planets', query: ["search": "tatooine"]);
+        HttpResponse httpResponse = swapiClient.getPlanetDetails("Tatooine")
+        then: "the value of climate for the planet Tatooine should be arid"
+        String climate
+        try {
+            HttpEntity responseEntity = httpResponse.getEntity();
+            if (responseEntity != null) {
+                String responseEntityString = EntityUtils.toString(responseEntity)
+                // parsing JSON
+                JSONObject result = new JSONObject(responseEntityString)
+                //Convert String to JSON Object
+                JSONArray tokenList = result.getJSONArray("results")
+                JSONObject oj = tokenList.getJSONObject(0)
+                climate = oj.getString("climate")
+            }
+        }
+        catch (Exception e) {
+            Logger.logMessage("unable to parse JSON in response")
+        }
+        climate.equals("arid")
     }
 
     def cleanup(){
