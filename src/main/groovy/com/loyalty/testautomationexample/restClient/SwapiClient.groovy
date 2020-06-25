@@ -13,9 +13,8 @@ import org.springframework.stereotype.Component
 class SwapiClient {
 
     @Value('${test.swapi.url}') String BASEURL
-
-    final String CHARACTERS_PATH = "/people"
-    final String PLANETS_PATH = "/planets"
+    @Value('${test.swapi.character-path}') String CHARACTERS_PATH
+    @Value('${test.swapi.planet-path}') String PLANETS_PATH
 
     HttpResponse getCharacters(){
         String url = BASEURL + CHARACTERS_PATH
@@ -37,8 +36,6 @@ class SwapiClient {
     HttpRequest getAPIRequest(String url) {
         HttpRequest request = new HttpGet(url)
         request.addHeader("ACCEPT_LANGUAGE", "EN")
-        // request.addHeader("Content-type", "application/x-www-form-urlencoded")
-        //request.addHeader("Content-type", "JSON")
         request.addHeader("Accpet", "application/json")
         request
     }
@@ -46,8 +43,7 @@ class SwapiClient {
     HttpResponse sendRequest(HttpRequest request) {
         HttpClient client = HttpClientBuilder.create()
                 .build()
-        Logger.logMessage(request.getURI().toString())
+        Logger.logMessage("sending get request to: " + request.getURI().toString())
         client.execute(request)
     }
-
 }

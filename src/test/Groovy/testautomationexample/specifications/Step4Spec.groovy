@@ -37,7 +37,6 @@ class Step4Spec extends BaseSpec {
         given: "an API endpoint exists that provides data about Star Wars Movies (SWAPI)"
         // api client is automatically created by Spring via @Autowired
         when: "a call is made to the API requesting data for the planet Tatooine"
-        //HttpResponseDecorator JsonResponse = swClient.get(path: 'planets', query: ["search": "tatooine"]);
         HttpResponse httpResponse = swapiClient.getPlanetDetails("Tatooine")
         then: "the value of climate for the planet Tatooine should be arid"
         String climate

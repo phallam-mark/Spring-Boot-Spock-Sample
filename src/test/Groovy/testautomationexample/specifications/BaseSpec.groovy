@@ -15,10 +15,5 @@ import com.loyalty.testautomationexample.utilities.Logger
 @SpringBootTest(classes = TestAutomationExample)
 
 class BaseSpec extends Specification {
-
-    //@Shared
-    @Value('${test.data-path}')
-    static String FILE
-    //@Shared
-    //String filePathName = "/Users/phallammark/Code/SpockFromScratch/out/starWarsPlanets.csv"
+    @Value('${test.data-path}') static String FILE
 }

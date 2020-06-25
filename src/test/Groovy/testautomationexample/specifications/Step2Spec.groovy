@@ -11,7 +11,7 @@ class Step2Spec extends BaseSpec {
     @Shared
     String filePath = new String(FILE.toString())
 
-    @Shared File file1
+    @Shared File planetFile
 
     def setupSpec(){
         Logger.logMessage("setupSpec() - Runs once per Specification")
@@ -19,11 +19,11 @@ class Step2Spec extends BaseSpec {
         //in case the output file already exists from a previous test run, delete it
         new File(filePath).delete()
         //create a file and write some CSV lines to it
-        file1 = new File(filePath)
-        file1.write("NAME,DIAMETER,CLIMATE,TERRAIN\n")
-        file1.append("Tatooine,10465,arid,desert\n")
-        file1.append("Bespin,118000,temperate,gas giant\n")
-        file1.append("Kamino,19720,temperate,ocean\n")
+        planetFile = new File(filePath)
+        planetFile.write("NAME,DIAMETER,CLIMATE,TERRAIN\n")
+        planetFile.append("Tatooine,10465,arid,desert\n")
+        planetFile.append("Bespin,118000,temperate,gas giant\n")
+        planetFile.append("Kamino,19720,temperate,ocean\n")
     }
 
     def setup() {
@@ -34,7 +34,7 @@ class Step2Spec extends BaseSpec {
         given : "the starWarsPlanets file has been created"
         //NA - was created in the setupSpec portion of the Spec
         when: "the existence of the file is verified"
-        boolean fileExists = file1.exists()
+        boolean fileExists = planetFile.exists()
         then: "the file should exist"
         fileExists
     }
@@ -44,7 +44,7 @@ class Step2Spec extends BaseSpec {
         given : "the starWarsPlanets file has been created and lines of text have been written to it"
         //NA - was created in the setupSpec portion of the Spec
         when: "the lines in the file are counted"
-        ArrayList lines = file1.readLines()
+        ArrayList lines = planetFile.readLines()
         then: "the number of lines should equal 4"
         lines.size() == 4
     }
@@ -54,7 +54,7 @@ class Step2Spec extends BaseSpec {
         //NA - file was created in setupSpec portion of the Spec
         when: "the file is read and parsed"
         //read the contents of the file into one long string
-        String csv_content = file1.getText('utf-8')
+        String csv_content = planetFile.getText('utf-8')
         then: "the climate of the planet Tatooine should be arid"
         boolean result = false
         //parse the string into key value pairs

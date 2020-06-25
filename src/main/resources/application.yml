@@ -10,4 +10,6 @@ spring:
 test:
   swapi:
     url: https://swapi.dev/api
+    character-path: /people
+    planet-path: /planets
 
