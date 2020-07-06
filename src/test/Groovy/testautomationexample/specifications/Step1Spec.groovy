@@ -1,6 +1,7 @@
 package testautomationexample.specifications
 
 import com.loyalty.testautomationexample.utilities.Logger
+import spock.lang.Ignore
 import spock.lang.Shared
 //import spock.lang.Specification
 
@@ -32,6 +33,8 @@ class Step1Spec extends BaseSpec {
         string1 == string2
     }
 
+    @Ignore //ignoring this test because it causes the build to fail if run from the command-line. Un-ignore it and run it within an IDE
+    //if you want to see what a failing test looks like
     def "Feature method 2 - a demonstration of a test that fails" () {
         Logger.logMessage("Feature method 2 - start");
         given : "2 strings to be compared, string 1 and string 3"
